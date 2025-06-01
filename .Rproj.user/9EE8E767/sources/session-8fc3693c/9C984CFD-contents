@@ -133,12 +133,12 @@ theme_set(theme_half_open(font_size = 10))
 ## Soybean Rust data
 
 ```{r}
-data_load = gsheet2tbl("https://docs.google.com/spreadsheets/d/1eGcLU8JVJ485pkKgAQUuVorapp57TVvYtRO5hpnmW3w/edit#gid=1365448637") 
+data_load = read.csv("data/raw-data-2005-2020.csv")
 ```
 
 ## ENSO data
 ```{r}
-enso_data = gsheet2tbl("https://docs.google.com/spreadsheets/d/1NFm1hKCS8V4r3GRbE13QbKAQ8RZ0e21WES6UtN7uM_8/edit?usp=sharing")
+enso_data = read.csv("data/enso.csv")
 ```
 
 Classifying the years based on Oceanic Niño Index (ONI) on the October, November, and December (OND) trimester. Seasons with ONI higher then 75 percentiles were classified as warm, year with ONI lower then its 25 percentiles were classified as Cold, and the years with ONI within the 25 and 75 percentiles were classified as neutral.
