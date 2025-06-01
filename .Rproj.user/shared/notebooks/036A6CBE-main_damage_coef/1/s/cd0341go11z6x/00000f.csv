@@ -1,0 +1,32 @@
+"0","summary(model_check)"
+"1","Linear mixed model fit by maximum likelihood . t-tests use Satterthwaite's method ['lmerModLmerTest']
+Formula: logit_sev ~ enso + (1 | year/study)
+   Data: only_check_df
+
+     AIC      BIC   logLik deviance df.resid 
+  4506.7   4539.3  -2247.3   4494.7     1680 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-7.5458 -0.2094  0.0000  0.2012  9.5043 
+
+Random effects:
+ Groups     Name        Variance Std.Dev.
+ study:year (Intercept) 2.80243  1.6740  
+ year       (Intercept) 0.07201  0.2683  
+ Residual               0.35208  0.5934  
+Number of obs: 1686, groups:  study:year, 418; year, 16
+
+Fixed effects:
+            Estimate Std. Error      df t value Pr(>|t|)    
+(Intercept)   0.6678     0.1523 13.0217   4.385 0.000735 ***
+ensoWarm      0.2028     0.2544 11.8761   0.797 0.441117    
+ensoCold      0.4745     0.2843 16.4863   1.669 0.113967    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Correlation of Fixed Effects:
+         (Intr) ensWrm
+ensoWarm -0.599       
+ensoCold -0.536  0.321
+"

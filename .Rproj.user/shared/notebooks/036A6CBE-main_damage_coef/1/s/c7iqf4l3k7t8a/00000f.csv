@@ -1,0 +1,13 @@
+"0",""
+"0",""
+"0","grid = qdrg(object = metamodel2,  data = data4, at = list(vi = 0, year.c = 0))"
+"2","G1;Erro: objeto 'metamodel2' não encontrado
+Erros durante o embrulho: não há tantas estruturas na pilha
+H1;Errorh: no more error handlers available (recursive errors?); invoking 'abort' restart
+g"
+"0","# cld(emmeans(grid,specs = ~enso, by = ""region""), Letters = letters)"
+"0","cld(emmeans(grid, specs = ~enso), Letters = letters)"
+"2","G1;H1;Errorh in (function (object, at, cov.reduce = mean, cov.keep = get_emm_option(""cov.keep""),  : 
+  Can't handle an object of class  “function” 
+ Use help(""models"", package = ""emmeans"") for information on supported models.
+g"

@@ -1,0 +1,6 @@
+"0","yprotection_df = expand.grid(ymax = ymax,lambda = lambda, sn = sn, a = a) |> "
+"0","  mutate(yld_protection = ((a*ymax)/100) *(sn-(sn*(1-lambda/100)))) |> "
+"0","  mutate(lambda = paste0(lambda,""% of Control"")) |> "
+"0","  full_join(dc_data |> rename(a = emmean))"
+"2","[38;5;231mJoining with `by = join_by(a)`[39m
+"

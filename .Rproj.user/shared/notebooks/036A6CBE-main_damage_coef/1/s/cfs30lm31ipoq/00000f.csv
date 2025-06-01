@@ -1,0 +1,5 @@
+"0","data_load = gsheet2tbl(""https://docs.google.com/spreadsheets/d/1eGcLU8JVJ485pkKgAQUuVorapp57TVvYtRO5hpnmW3w/edit#gid=1365448637"") "
+"2","Warning :[38;5;231mOne or more parsing issues, call `problems()` on your data frame for details, e.g.:
+  dat <- vroom(...)
+  problems(dat)[39m
+"

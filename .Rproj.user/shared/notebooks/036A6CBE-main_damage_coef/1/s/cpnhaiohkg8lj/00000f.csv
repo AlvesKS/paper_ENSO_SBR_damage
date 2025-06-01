@@ -1,0 +1,15 @@
+"0","data3 = data2 |> "
+"0","  group_by(study, year, enso, region) |> "
+"0","  summarise(slope = lm(l~0+sev)$coefficients,"
+"0","            vi = as.numeric(vcov(lm(l~0+sev)))"
+"0","            ) |> "
+"0","  full_join(enso_data_class)"
+"2","G1;Erro: objeto 'data2' não encontrado
+Erros durante o embrulho: não há tantas estruturas na pilha
+H1;Errorh: no more error handlers available (recursive errors?); invoking 'abort' restart
+g"
+"0","data3"
+"2","G1;Erro: objeto 'data3' não encontrado
+Erros durante o embrulho: não há tantas estruturas na pilha
+H1;Errorh: no more error handlers available (recursive errors?); invoking 'abort' restart
+g"

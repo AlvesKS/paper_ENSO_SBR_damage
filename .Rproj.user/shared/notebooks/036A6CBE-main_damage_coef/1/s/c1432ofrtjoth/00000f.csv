@@ -1,0 +1,5 @@
+"0","data3 |> "
+"0","  group_by(enso) |> "
+"0","  summarise(mean(slope),"
+"0","            median(slope),"
+"0","            round(quantile(vi,0.95),2))"

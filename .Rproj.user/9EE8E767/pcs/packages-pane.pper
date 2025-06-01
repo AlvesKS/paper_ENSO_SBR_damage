@@ -1,0 +1,7 @@
+{
+    "installOptions": {
+        "installFromRepository": true,
+        "libraryPath": "G:/.shortcut-targets-by-id/1dhaIjvNvB3338uiITeAH9RsOtKndESF7/Kaique-Alves/SBR-soybean/05 - SBR_damage_coef/01-data_analysis/renv/library/windows/R-4.4/x86_64-w64-mingw32",
+        "installDependencies": true
+    }
+}

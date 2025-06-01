@@ -1,0 +1,10 @@
+"0","only_check_df = data_load2 |> "
+"0","  filter(active_ingred == ""CHECK"") |> "
+"0","  mutate(sev = case_when(sev == 100 ~ 99.9,"
+"0","                         sev == 0 ~ 0.1,"
+"0","                         sev>0 & sev<100 ~ sev), "
+"0","           logit_sev =  DescTools::Logit(sev/100))"
+"2","G3;Registered S3 method overwritten by 'data.table':
+  method           from
+  print.data.table     
+g"

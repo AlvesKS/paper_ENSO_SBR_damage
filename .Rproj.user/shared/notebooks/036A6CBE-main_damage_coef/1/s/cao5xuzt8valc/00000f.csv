@@ -1,0 +1,31 @@
+"0","data4 = data3 |> "
+"0","  mutate(year = as.factor(year),"
+"0","         enso = factor(enso, levels = c(""Neutral"", ""Cold"", ""Warm"")))"
+"0","metamodel2 = rma.uni(yi = slope,"
+"0","                    vi = vi,"
+"0","                    mods = ~ enso, "
+"0","                    random = list(~1|year/study),"
+"0","                    # struct = ""HCS"","
+"0","                    method = ""ML"","
+"0","                    data =data4)"
+"2","Warning :Extra argument ('random') disregarded.
+"
+"0","metamodel2"
+"1","
+Mixed-Effects Model (k = 417; tau^2 estimator: ML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.1099 (SE = 0.0080)
+tau (square root of estimated tau^2 value):             0.3316
+I^2 (residual heterogeneity / unaccounted variability): 99.54%
+H^2 (unaccounted variability / sampling variability):   219.29
+R^2 (amount of heterogeneity accounted for):            5.61%
+
+Test for Residual Heterogeneity:
+QE(df = 414) = 41096.3735, p-val < .0001
+
+Test of Moderators (coefficients 2:3):
+QM(df = 2) = 17.5026, p-val = 0.0002
+
+Model Results:
+
+"

@@ -1,0 +1,31 @@
+"0","reg2_gg ="
+"0","  data3 |> "
+"0","  mutate(enso = factor(enso, levels = c(""Neutral"", ""Warm"", ""Cold""))) |> "
+"0","  ggplot()+"
+"0","  geom_abline(aes(intercept = 0, slope = slope, color= enso), alpha = 0.9)+"
+"0","  labs(x = ""Severity (%)"","
+"0","       y = ""Yield (kg/ha)"")+"
+"0","  theme_half_open()+"
+"0","  xlim(0,100)+"
+"0","  ylim(0,100)+"
+"0","  scale_x_continuous(expand = c(0, 0),"
+"0","                     limits = c(0,100)) +"
+"0","  scale_y_continuous(expand = c(0, 0),"
+"0","                     limits = c(0,100))+"
+"0","  scale_color_colorblind()+"
+"0","  theme_half_open(font_size = 10)+"
+"0","  facet_rep_grid(~enso)+"
+"0","  labs(x = ""SBR severity (%)"","
+"0","       y = expression(""Relative yield loss (%)""),"
+"0","       color = """")+"
+"0","  theme(strip.background = element_blank(),"
+"0","        legend.position = ""none"")"
+"2","G1;Erro: objeto 'data3' não encontrado
+Erros durante o embrulho: não há tantas estruturas na pilha
+H1;Errorh: no more error handlers available (recursive errors?); invoking 'abort' restart
+g"
+"0","reg2_gg"
+"2","G1;Erro: objeto 'reg2_gg' não encontrado
+Erros durante o embrulho: não há tantas estruturas na pilha
+H1;Errorh: no more error handlers available (recursive errors?); invoking 'abort' restart
+g"

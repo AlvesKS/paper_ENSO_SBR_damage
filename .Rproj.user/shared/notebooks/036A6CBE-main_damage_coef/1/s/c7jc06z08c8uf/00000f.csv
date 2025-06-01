@@ -1,0 +1,9 @@
+"0","data3 |> "
+"0","  group_by(enso) |> "
+"0","  summarise(mean(slope),"
+"0","            median(slope),"
+"0","            round(quantile(vi,0.95),2))"
+"2","G1;Erro: objeto 'data3' não encontrado
+Erros durante o embrulho: não há tantas estruturas na pilha
+H1;Errorh: no more error handlers available (recursive errors?); invoking 'abort' restart
+g"

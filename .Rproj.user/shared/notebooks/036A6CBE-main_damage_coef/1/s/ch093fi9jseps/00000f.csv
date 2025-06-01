@@ -1,0 +1,18 @@
+"0",""
+"0",""
+"0","grid = qdrg(object = metamodel2,  data = data4, at = list(vi = 0, year.c = 0))"
+"0","# cld(emmeans(grid,specs = ~enso, by = ""region""), Letters = letters)"
+"0","cld(emmeans(grid, specs = ~enso), Letters = letters)"
+"1"," enso    emmean     SE  df lower.CL upper.CL .group
+ Cold     0.501 0.0382 414    0.426    0.576  a    
+ Neutral  0.565 0.0236 414    0.519    0.612  a    
+ Warm     0.691 0.0305 414    0.631    0.751   b   
+
+Confidence level used: 0.95 
+P value adjustment: tukey method for comparing a family of 3 estimates 
+significance level used: alpha = 0.05 
+NOTE: If two or more means share the same grouping symbol,
+      then we cannot show them to be different.
+      But we also did not show them to be the same. 
+"
+"0","# grid@V"

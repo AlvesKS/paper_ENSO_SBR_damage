@@ -1,0 +1,6 @@
+"0","unique(data_load2$state)"
+"1"," [1] ""BA"" ""PR"" ""MG"" ""MS"" ""MT"" ""GO"" ""SP"" ""MA"" ""DF"" ""TO"" ""RS"" ""SC""
+"
+"0","length(unique(data_load2$state))"
+"1","[1] 12
+"

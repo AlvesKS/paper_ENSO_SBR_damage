@@ -1,0 +1,23 @@
+"0","data4 = data3 |> "
+"0","  mutate(year = as.factor(year),"
+"0","         enso = factor(enso, levels = c(""Neutral"", ""Cold"", ""Warm"")))"
+"2","G1;Erro: objeto 'data3' não encontrado
+Erros durante o embrulho: não há tantas estruturas na pilha
+H1;Errorh: no more error handlers available (recursive errors?); invoking 'abort' restart
+g"
+"0","metamodel2 = rma.uni(yi = slope,"
+"0","                    vi = vi,"
+"0","                    mods = ~ enso, "
+"0","                    random = list(~1|year/study),"
+"0","                    # struct = ""HCS"","
+"0","                    method = ""ML"","
+"0","                    data =data4)"
+"2","G1;Erro: objeto 'data4' não encontrado
+Erros durante o embrulho: não há tantas estruturas na pilha
+H1;Errorh: no more error handlers available (recursive errors?); invoking 'abort' restart
+g"
+"0","metamodel2"
+"2","G1;Erro: objeto 'metamodel2' não encontrado
+Erros durante o embrulho: não há tantas estruturas na pilha
+H1;Errorh: no more error handlers available (recursive errors?); invoking 'abort' restart
+g"

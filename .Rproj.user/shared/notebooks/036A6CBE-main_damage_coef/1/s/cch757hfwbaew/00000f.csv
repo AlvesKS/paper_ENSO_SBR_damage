@@ -1,0 +1,8 @@
+"0","data3 |> "
+"0","  ggplot(aes(slope))+"
+"0","  geom_histogram(color = ""gray"")+"
+"0","  facet_rep_wrap(~enso, ncol=1 )"
+"2","G1;Erro: objeto 'data3' não encontrado
+Erros durante o embrulho: não há tantas estruturas na pilha
+H1;Errorh: no more error handlers available (recursive errors?); invoking 'abort' restart
+g"

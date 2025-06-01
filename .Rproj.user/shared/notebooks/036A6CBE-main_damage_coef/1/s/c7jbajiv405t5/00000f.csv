@@ -1,0 +1,8 @@
+"0","data2 |> "
+"0","  ggplot(aes(l))+"
+"0","  geom_histogram(color = ""white"", bins = 10)&"
+"0","  theme_half_open()"
+"2","G1;Erro: objeto 'data2' não encontrado
+Erros durante o embrulho: não há tantas estruturas na pilha
+H1;Errorh: no more error handlers available (recursive errors?); invoking 'abort' restart
+g"

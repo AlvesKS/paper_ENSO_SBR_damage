@@ -1,0 +1,4 @@
+"0","data_load2 |> "
+"0","  group_by(state) |> "
+"0","  summarise(n_loc = length(unique(location))) |> "
+"0","  summarise(sum(n_loc))"

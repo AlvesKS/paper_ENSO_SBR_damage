@@ -1,0 +1,32 @@
+"0","summary(model_check_yld)"
+"1","Linear mixed model fit by maximum likelihood . t-tests use Satterthwaite's method ['lmerModLmerTest']
+Formula: yld ~ enso + (1 | year/study)
+   Data: only_check_df
+
+     AIC      BIC   logLik deviance df.resid 
+ 24878.7  24911.3 -12433.4  24866.7     1680 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-4.5778 -0.4421  0.0067  0.4548  5.2378 
+
+Random effects:
+ Groups     Name        Variance Std.Dev.
+ study:year (Intercept) 618988   786.8   
+ year       (Intercept)  96443   310.6   
+ Residual                57242   239.3   
+Number of obs: 1686, groups:  study:year, 418; year, 16
+
+Fixed effects:
+            Estimate Std. Error      df t value Pr(>|t|)    
+(Intercept)  2148.18     123.74   14.70  17.361 3.36e-11 ***
+ensoWarm     -219.25     211.23   13.94  -1.038    0.317    
+ensoCold      181.70     221.18   16.40   0.822    0.423    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Correlation of Fixed Effects:
+         (Intr) ensWrm
+ensoWarm -0.586       
+ensoCold -0.559  0.328
+"

@@ -1,0 +1,11 @@
+"0","data4 = data3 |> mutate(year = as.factor(year))"
+"0","metamodel2 = rma.uni(yi = slope,"
+"0","                    vi = vi,"
+"0","                    mods = ~ 0+enso, "
+"0","                    random = list(~1|year/study),"
+"0","                    # struct = ""HCS"","
+"0","                    method = ""ML"","
+"0","                    data =data4)"
+"2","Warning :Extra argument ('random') disregarded.
+"
+"0","metamodel2"

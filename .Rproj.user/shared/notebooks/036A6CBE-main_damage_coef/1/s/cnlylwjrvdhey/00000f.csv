@@ -1,0 +1,106 @@
+"0","install.packages(""pbkrtest"")"
+"1","# Downloading packages -------------------------------------------------------
+- Downloading pbkrtest from CRAN ...            "
+"1","OK [224 Kb in 1.7s]
+"
+"1","- Downloading doBy from CRAN ...                "
+"1","OK [4.7 Mb in 2.0s]
+"
+"1","- Downloading Deriv from CRAN ...               "
+"1","OK [148.6 Kb in 1.2s]
+"
+"1","- Downloading microbenchmark from CRAN ...      "
+"1","OK [71.4 Kb in 1.4s]
+"
+"0","data2 = data_load2 |> "
+"1","Successfully downloaded 4 packages in 7.6 seconds.
+
+The following package(s) will be installed:
+- Deriv          [4.1.6]
+- doBy           [4.6.27]
+- microbenchmark [1.5.0]
+- pbkrtest       [0.5.4]
+These packages will be installed into ""G:/.shortcut-targets-by-id/1dhaIjvNvB3338uiITeAH9RsOtKndESF7/Kaique-Alves/SBR-soybean/05 - SBR_damage_coef/01-data_analysis/renv/library/windows/R-4.4/x86_64-w64-mingw32"".
+
+"
+"1","- Unrecognized response: please enter 'y' or 'n', or type Ctrl + C to cancel.
+"
+"0","y"
+"1","
+# Installing packages --------------------------------------------------------
+"
+"1","- Installing Deriv ...                          "
+"2","Warning :objeto 'G:/.shortcut-targets-by-id/1dhaIjvNvB3338uiITeAH9RsOtKndESF7/Kaique-Alves/SBR-soybean/05 - SBR_damage_coef/01-data_analysis/renv/staging/1/Deriv/DESCRIPTION' não encontrado
+"
+"2","Warning :objeto 'G:/.shortcut-targets-by-id/1dhaIjvNvB3338uiITeAH9RsOtKndESF7/Kaique-Alves/SBR-soybean/05 - SBR_damage_coef/01-data_analysis/renv/staging/1/Deriv/DESCRIPTION' não encontrado
+"
+"2","Warning :objeto 'G:/.shortcut-targets-by-id/1dhaIjvNvB3338uiITeAH9RsOtKndESF7/Kaique-Alves/SBR-soybean/05 - SBR_damage_coef/01-data_analysis/renv/staging/1/Deriv/DESCRIPTION' não encontrado
+"
+"2","Warning :objeto 'G:/.shortcut-targets-by-id/1dhaIjvNvB3338uiITeAH9RsOtKndESF7/Kaique-Alves/SBR-soybean/05 - SBR_damage_coef/01-data_analysis/renv/staging/1/Deriv/DESCRIPTION' não encontrado
+"
+"2","Warning :objeto 'G:/.shortcut-targets-by-id/1dhaIjvNvB3338uiITeAH9RsOtKndESF7/Kaique-Alves/SBR-soybean/05 - SBR_damage_coef/01-data_analysis/renv/staging/1/Deriv/DESCRIPTION' não encontrado
+"
+"2","Warning :objeto 'G:/.shortcut-targets-by-id/1dhaIjvNvB3338uiITeAH9RsOtKndESF7/Kaique-Alves/SBR-soybean/05 - SBR_damage_coef/01-data_analysis/renv/staging/1/Deriv/DESCRIPTION' não encontrado
+"
+"1","OK [installed binary and cached in 0.87s]
+"
+"1","- Installing microbenchmark ...                 "
+"2","Warning :objeto 'G:/.shortcut-targets-by-id/1dhaIjvNvB3338uiITeAH9RsOtKndESF7/Kaique-Alves/SBR-soybean/05 - SBR_damage_coef/01-data_analysis/renv/staging/1/microbenchmark/DESCRIPTION' não encontrado
+"
+"2","Warning :objeto 'G:/.shortcut-targets-by-id/1dhaIjvNvB3338uiITeAH9RsOtKndESF7/Kaique-Alves/SBR-soybean/05 - SBR_damage_coef/01-data_analysis/renv/staging/1/microbenchmark/DESCRIPTION' não encontrado
+"
+"2","Warning :objeto 'G:/.shortcut-targets-by-id/1dhaIjvNvB3338uiITeAH9RsOtKndESF7/Kaique-Alves/SBR-soybean/05 - SBR_damage_coef/01-data_analysis/renv/staging/1/microbenchmark/DESCRIPTION' não encontrado
+"
+"2","Warning :objeto 'G:/.shortcut-targets-by-id/1dhaIjvNvB3338uiITeAH9RsOtKndESF7/Kaique-Alves/SBR-soybean/05 - SBR_damage_coef/01-data_analysis/renv/staging/1/microbenchmark/DESCRIPTION' não encontrado
+"
+"2","Warning :objeto 'G:/.shortcut-targets-by-id/1dhaIjvNvB3338uiITeAH9RsOtKndESF7/Kaique-Alves/SBR-soybean/05 - SBR_damage_coef/01-data_analysis/renv/staging/1/microbenchmark/DESCRIPTION' não encontrado
+"
+"2","Warning :objeto 'G:/.shortcut-targets-by-id/1dhaIjvNvB3338uiITeAH9RsOtKndESF7/Kaique-Alves/SBR-soybean/05 - SBR_damage_coef/01-data_analysis/renv/staging/1/microbenchmark/DESCRIPTION' não encontrado
+"
+"1","OK [installed binary and cached in 0.96s]
+"
+"1","- Installing doBy ...                           "
+"2","Warning :objeto 'G:/.shortcut-targets-by-id/1dhaIjvNvB3338uiITeAH9RsOtKndESF7/Kaique-Alves/SBR-soybean/05 - SBR_damage_coef/01-data_analysis/renv/staging/1/doBy/DESCRIPTION' não encontrado
+"
+"2","Warning :objeto 'G:/.shortcut-targets-by-id/1dhaIjvNvB3338uiITeAH9RsOtKndESF7/Kaique-Alves/SBR-soybean/05 - SBR_damage_coef/01-data_analysis/renv/staging/1/doBy/DESCRIPTION' não encontrado
+"
+"2","Warning :objeto 'G:/.shortcut-targets-by-id/1dhaIjvNvB3338uiITeAH9RsOtKndESF7/Kaique-Alves/SBR-soybean/05 - SBR_damage_coef/01-data_analysis/renv/staging/1/doBy/DESCRIPTION' não encontrado
+"
+"2","Warning :objeto 'G:/.shortcut-targets-by-id/1dhaIjvNvB3338uiITeAH9RsOtKndESF7/Kaique-Alves/SBR-soybean/05 - SBR_damage_coef/01-data_analysis/renv/staging/1/doBy/DESCRIPTION' não encontrado
+"
+"2","Warning :objeto 'G:/.shortcut-targets-by-id/1dhaIjvNvB3338uiITeAH9RsOtKndESF7/Kaique-Alves/SBR-soybean/05 - SBR_damage_coef/01-data_analysis/renv/staging/1/doBy/DESCRIPTION' não encontrado
+"
+"2","Warning :objeto 'G:/.shortcut-targets-by-id/1dhaIjvNvB3338uiITeAH9RsOtKndESF7/Kaique-Alves/SBR-soybean/05 - SBR_damage_coef/01-data_analysis/renv/staging/1/doBy/DESCRIPTION' não encontrado
+"
+"1","OK [installed binary and cached in 1.3s]
+"
+"1","- Installing pbkrtest ...                       "
+"2","Warning :objeto 'G:/.shortcut-targets-by-id/1dhaIjvNvB3338uiITeAH9RsOtKndESF7/Kaique-Alves/SBR-soybean/05 - SBR_damage_coef/01-data_analysis/renv/staging/1/pbkrtest/DESCRIPTION' não encontrado
+"
+"2","Warning :objeto 'G:/.shortcut-targets-by-id/1dhaIjvNvB3338uiITeAH9RsOtKndESF7/Kaique-Alves/SBR-soybean/05 - SBR_damage_coef/01-data_analysis/renv/staging/1/pbkrtest/DESCRIPTION' não encontrado
+"
+"2","Warning :objeto 'G:/.shortcut-targets-by-id/1dhaIjvNvB3338uiITeAH9RsOtKndESF7/Kaique-Alves/SBR-soybean/05 - SBR_damage_coef/01-data_analysis/renv/staging/1/pbkrtest/DESCRIPTION' não encontrado
+"
+"2","Warning :objeto 'G:/.shortcut-targets-by-id/1dhaIjvNvB3338uiITeAH9RsOtKndESF7/Kaique-Alves/SBR-soybean/05 - SBR_damage_coef/01-data_analysis/renv/staging/1/pbkrtest/DESCRIPTION' não encontrado
+"
+"2","Warning :objeto 'G:/.shortcut-targets-by-id/1dhaIjvNvB3338uiITeAH9RsOtKndESF7/Kaique-Alves/SBR-soybean/05 - SBR_damage_coef/01-data_analysis/renv/staging/1/pbkrtest/DESCRIPTION' não encontrado
+"
+"2","Warning :objeto 'G:/.shortcut-targets-by-id/1dhaIjvNvB3338uiITeAH9RsOtKndESF7/Kaique-Alves/SBR-soybean/05 - SBR_damage_coef/01-data_analysis/renv/staging/1/pbkrtest/DESCRIPTION' não encontrado
+"
+"1","OK [installed binary and cached in 1.3s]
+"
+"1","Successfully installed 4 packages in 5.8 seconds.
+"
+"0","  full_join(reg_dc) |> "
+"0","  mutate(l = 100*((intercept - yld)/intercept)) |> "
+"0","  filter(!is.na(l))"
+"2","G1;H1;Errorh in full_join.data.frame(reg_dc) : argumento ""y"" ausente, sem padrão
+g"
+"2","G1;Erros durante o embrulho: não há tantas estruturas na pilha
+H1;Errorh: no more error handlers available (recursive errors?); invoking 'abort' restart
+g"
+"0","data2"
+"2","G1;Erro: objeto 'data2' não encontrado
+Erros durante o embrulho: não há tantas estruturas na pilha
+H1;Errorh: no more error handlers available (recursive errors?); invoking 'abort' restart
+g"

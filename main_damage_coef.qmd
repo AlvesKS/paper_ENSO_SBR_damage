@@ -1,0 +1,1121 @@
+---
+title: "Data analysis"
+subtitle: "Quantifying ENSO-mediated Shifts in Soybean Rust Impact: Yield Loss Dynamics and Management Implications in Brazil"
+author: 
+ - name: Kaique S. Alves
+   affiliation: "Universidade Federal de Viçosa, Viçosa MG, Brazil"
+date: last-modified
+title-block-banner: true
+format:
+  html:
+    code-fold: false
+    theme: cosmo
+    toc: true
+    toc-location: left
+    toc-depth: 5
+    df-print: paged
+    self-contained: false
+    anchor-sections: true
+    smooth-scroll: true
+    code-copy: true
+---
+
+# Getting started
+
+This project uses `renv` to manage package dependencies and ensure reproducible computational environments. Follow the steps below to set up and execute the code.
+
+## Prerequisites
+1) R (≥ 4.0.0) 
+Ensure you have a compatible version of R installed. You can download R from CRAN.
+
+2) Git (optional but recommended)
+To clone the repository, install Git from git-scm.com. Alternatively, you can download the repository as a ZIP.
+
+3) Project Files
+
+## Steps to Initialize the Environment
+
+1) Clone or Download the Repository
+
+```{r eval = F}
+git clone https://github.com/AlvesKS/paper_ENSO_SBR_damage.git
+cd your-repo
+```
+
+Alternatively, you can download the repository as a ZIP file and extract it to your working directory using the code below:
+
+```{r echo=TRUE, eval=FALSE}
+download.file("https://github.com/AlvesKS/paper_ENSO_SBR_damage/archive/refs/heads/main.zip", destfile = "paper-white-mold-prediction-modeling.zip", mode = "wb")
+
+unzip("paper-white-mold-prediction-modeling.zip", list = FALSE)
+```
+
+
+2) Open the Project in R
+
+The repository files should be inside the `paper-white-mold-prediction-modeling/` directory, which should be locatated in your working directory. Open the file `.Rproj` file.
+
+3) Install or update the `renv` package (if not already installed)
+
+If you haven't installed `renv` yet, run the following command in your R console. If you already have `renv`, ensure it is updated to the latest version.
+
+```{r eval=FALSE}
+install.packages("renv")
+```
+
+
+4) Restore the Project Library
+
+-  This command reads the renv.lock file and installs the exact package versions into a project-specific library (`renv/library/`).  
+-  If prompted to update renv itself, follow the message and restart R afterward.  
+
+```{r eval=FALSE}
+renv::restore()
+```
+
+5) Verify Successful Restoration  
+
+After `renv::restore()` completes, you should see messages indicating that required packages were installed. You can check the status with:
+
+```{r eval=FALSE}
+renv::status()
+```
+
+
+If all dependencies are up to date, `renv::status()` will report no divergences from the lockfile.
+
+
+## Running the Analysis
+
+
+1)  Locate the Main Script
+
+The primary analysis script are located in the R/ directory named as `main_damage_coef.qmd`.
+
+2)  Execute the Workflow 
+
+From now on, you can run the analysis by executing the code chunks in the R quarto file. The code is organized into sections, and you should each execute section sequentialy or knit the entire document to generate a report. 
+
+3)  Inspect and Export Outputs
+
+Output figures (PNG/PDF) are saved in the `figs/` folder.
+
+
+
+
+
+# Packages
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(gsheet)
+library(cowplot)
+library(patchwork)
+library(lemon)
+library(lme4)
+library(ggforce)
+library(ggrepel)
+library(lmerTest)
+library(emmeans)
+library(multcomp)
+library(ggthemes)
+library(metafor)
+library(minpack.lm)
+```
+
+```{r}
+theme_set(theme_half_open(font_size = 10))
+```
+
+
+# Data
+
+## Soybean Rust data
+
+```{r}
+data_load = gsheet2tbl("https://docs.google.com/spreadsheets/d/1eGcLU8JVJ485pkKgAQUuVorapp57TVvYtRO5hpnmW3w/edit#gid=1365448637") 
+```
+
+## ENSO data
+```{r}
+enso_data = gsheet2tbl("https://docs.google.com/spreadsheets/d/1NFm1hKCS8V4r3GRbE13QbKAQ8RZ0e21WES6UtN7uM_8/edit?usp=sharing")
+```
+
+Classifying the years based on Oceanic Niño Index (ONI) on the October, November, and December (OND) trimester. Seasons with ONI higher then 75 percentiles were classified as warm, year with ONI lower then its 25 percentiles were classified as Cold, and the years with ONI within the 25 and 75 percentiles were classified as neutral.
+
+```{r}
+enso_data_class = enso_data %>%
+  mutate(year = as.character(Year+1)) |> 
+  dplyr::select(-Year) |> 
+  mutate(selected_trimester = OND) |> 
+  dplyr::select(selected_trimester, year) %>%
+  filter(!is.na(selected_trimester),
+         year != 2021) |> 
+  mutate(quantile_0.75 = quantile(selected_trimester, 0.75),
+         quantile_0.25 = quantile(selected_trimester, 0.25)) |>
+  mutate(enso = case_when(selected_trimester > quantile_0.75 ~ "Warm",
+                          selected_trimester <=quantile_0.25 ~ "Cold",
+                          selected_trimester <= quantile_0.75 & selected_trimester > quantile_0.25 ~ "Neutral"),
+         year = as.numeric(year))
+enso_data_class
+```
+
+```{r}
+enso_data_class |> 
+  summarise(quantile_0.75 = unique(quantile_0.75),
+            quantile_0.25 = unique(quantile_0.25))
+```
+
+
+```{r}
+enso_gg = enso_data_class|> 
+  mutate(enso = factor(enso, levels = c("Neutral", "Warm", "Cold")))|> 
+  ggplot(aes( as.factor(year),selected_trimester,  color = enso))+
+  geom_hline(yintercept = 0)+
+  geom_hline(yintercept = c(-0.725,0.75), linetype = 2, color = "gray")+
+  geom_errorbar(aes(ymin=0, ymax  = selected_trimester), width = 0, color = "black")+
+  geom_point(size = 3)+
+  
+  scale_color_colorblind()+
+  theme_half_open(font_size = 12)+
+  scale_y_continuous(breaks = seq(-3,3,by = 0.75), limits = c(-3,3))+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        # legend.position = "top",
+        strip.background = element_blank())+
+  labs(x = "Crop Season",
+       y = "Oceanic Niño Index",
+       color = "ENSO phase (OND)")
+enso_gg
+ggsave("figs/ONI_OND.png", dpi = 600, height = 4, width = 7, bg = "white")
+```
+
+Counting the number of year for each phase
+```{r}
+enso_data_class |> 
+  count(enso)
+```
+
+
+# Data wrangling
+
+
+```{r}
+data_load2 = data_load %>%
+  full_join(enso_data_class) |> 
+  mutate(enso = factor(enso, levels = c("Neutral", "Warm", "Cold"))) |> 
+  filter(!is.na(sev),
+         !is.na(yld)) |> 
+  mutate(study = as.factor(study)) |> 
+  mutate(region = case_when(state %in% c("SP","BA","MG", "MS", "MT", "GO",  "MA", "DF", "TO")~"North",
+                             state %in% c("RS","SC","PR") ~"South"),
+         region =factor(region, levels = c("South","North"))) |> 
+  group_by(study) |> 
+  mutate(difer = max(sev) - min(sev)) |> 
+  filter(difer>5)
+
+
+
+data_load2 |> 
+  filter(active_ingred == "CHECK") |> 
+  ggplot(aes(sev, difer))+
+  geom_point(color = "black", size =2, shape =1)+
+  geom_hline(yintercept = 5, linetype = "dashed", color = "gray", size = 1.2)+
+  geom_abline(slope = 1, intercept = 0, color = "darkred", size = 1.4)+
+  annotate("text",x = 100, y = 5, label = "Minimum difference = 5 p.p", vjust = -1, hjust = 1)+
+  coord_cartesian(xlim = c(0,100),
+                  ylim = c(0,100))
+
+```
+
+```{r}
+unique(data_load2$state)
+length(unique(data_load2$state))
+
+```
+
+```{r}
+data_load2 |> 
+  group_by(state) |> 
+  summarise(n_loc = length(unique(location))) |> 
+  summarise(sum(n_loc))
+```
+
+```{r}
+length(unique(data_load2$year))
+```
+
+```{r}
+data_load2 |> 
+  group_by(enso) |> 
+  summarise(n_study = length(unique(study)),
+            n_year = length(unique(year)),
+            n_loc = length(unique(location)),
+            n_state = length(unique(state)))
+```
+
+
+
+## Tranformations
+
+Converting percent severity into proportion and calculating logits
+
+```{r fig.height=4, fig.width=12}
+only_check_df = data_load2 |> 
+  filter(active_ingred == "CHECK") |> 
+  mutate(sev = case_when(sev == 100 ~ 99.9,
+                         sev == 0 ~ 0.1,
+                         sev>0 & sev<100 ~ sev), 
+           logit_sev =  DescTools::Logit(sev/100))
+```
+
+# Exploratory analysis
+
+## Average, min and max severity
+
+### Overal
+
+```{r}
+ data_load2 |> 
+  filter(active_ingred == "CHECK") |> 
+  ungroup() |> 
+  summarise(avg_sev = mean(sev),
+            max_sev = max(sev),
+            min_sev = min(sev))
+```
+
+### by year
+
+```{r}
+ data_load2 |> 
+  filter(active_ingred == "CHECK") |> 
+  group_by(year) |> 
+  summarise(avg_sev = mean(sev),
+            max_sev = max(sev),
+            min_sev = min(sev)) |> 
+  arrange(max_sev)
+```
+
+### By ENSO state
+```{r}
+ data_load2 |> 
+  filter(active_ingred == "CHECK") |> 
+  group_by(enso) |> 
+  summarise(avg_sev = mean(sev),
+            max_sev = max(sev),
+            min_sev = min(sev))
+```
+
+### plot
+
+```{r}
+enso_sev_gg = data_load2 |> 
+  filter(active_ingred == "CHECK") |> 
+  ggplot(aes(enso, sev, color = enso))+
+  geom_sina(color = "gray")+
+  geom_boxplot(fill= NA, size = 1)+
+  theme_half_open(font_size = 12)+
+  scale_color_colorblind()+
+  labs( y = "",
+        x = "",
+        color = "",
+        title = "")
+enso_sev_gg
+```
+
+### Graph over time
+
+
+```{r fig.height=4, fig.width=12}
+sev_untreat_gg = only_check_df |> 
+  ggplot(aes(as.factor(year),  sev, color = enso))+
+  geom_sina(color = "gray80")+
+  geom_boxplot(fill =NA, size = 1, outlier.color = NA)+
+  labs( y = "Severity (%)",
+        x = "",
+        color = "",
+        title = " ")+
+  theme_half_open(font_size = 12)+
+  # facet_wrap(~region)+
+  scale_color_colorblind()
+sev_untreat_gg
+
+```
+
+## Average, min and max yield
+
+### Overal
+
+```{r}
+ data_load2 |> 
+  filter(active_ingred == "CHECK") |> 
+  ungroup() |> 
+  summarise(avg_yld = mean(yld),
+            max_yld = max(yld),
+            min_yld = min(yld))
+```
+
+### by year
+
+```{r}
+ data_load2 |> 
+  filter(active_ingred == "CHECK") |> 
+  group_by(year) |> 
+  summarise(avg_yld = mean(yld),
+            max_yld = max(yld),
+            min_yld = min(yld)) |> 
+  arrange(avg_yld)
+```
+
+### By ENSO state
+```{r}
+ data_load2 |> 
+  filter(active_ingred == "CHECK") |> 
+  group_by(enso)|> 
+  summarise(avg_yld = mean(yld),
+            max_yld = max(yld),
+            min_yld = min(yld)) |> 
+  arrange(avg_yld)
+```
+
+
+# Modeling Severity (untreated) and ENSO
+
+## Mixed-effect model
+
+```{r}
+model_check = lmer(logit_sev ~ enso+ (1|year/study), data = only_check_df,REML = F)
+```
+
+### Model summary
+
+```{r}
+summary(model_check)
+```
+
+### Pairwise comparison
+
+```{r}
+pairs(emmeans(model_check, ~enso))
+```
+
+### All Severity data (plot)
+
+```{r fig.height=4, fig.width=12}
+sev_gg = data_load2 |> 
+  ggplot(aes(as.factor(year),  sev, color = enso))+
+  geom_sina(color = "gray80")+
+  geom_boxplot(fill =NA, size = 1, outlier.color = NA)+
+  labs( y = "Severity (%)",
+        x = "Growing season",
+        color = "",
+        title = "Data from all plots")+
+  theme_half_open(font_size = 12)+
+  # facet_wrap(~region)+
+  scale_color_colorblind()
+sev_gg
+
+```
+
+
+
+
+# Modeling soybean yield and ENSO
+
+
+```{r}
+enso_yld_gg = data_load2 |> 
+  filter(active_ingred == "CHECK") |> 
+  ggplot(aes(enso, yld, color = enso))+
+  geom_sina(color = "gray")+
+  geom_boxplot(fill= NA, size = 1)+
+  scale_color_colorblind()+
+  theme_half_open(font_size = 12)+
+  labs( y = "",
+        x = "",
+        color = "",
+        title = "")
+enso_yld_gg
+```
+
+
+## Graph over time
+
+```{r fig.height=4, fig.width=12}
+
+yld_untreat_gg = data_load2 |> 
+  filter(active_ingred == "CHECK")|> 
+  ggplot(aes(as.factor(year),  yld, color = enso))+
+  geom_sina(color = "gray80")+
+  geom_boxplot(size =1, fill = NA, outlier.colour = NA)+
+  labs( y = "Yield (kg/ha)",
+        x = "Growing season",
+        color = "",
+        title = "")+
+  theme_half_open(font_size = 12)+
+  scale_color_colorblind()
+yld_untreat_gg
+
+```
+
+
+## Mixed-effect model
+
+```{r}
+model_check_yld = lmer(yld ~ enso + (1|year/study), data = only_check_df, REML = F)
+```
+
+### Model summary
+
+```{r}
+summary(model_check_yld)
+```
+
+### Pairwise comparison
+
+```{r}
+cld(emmeans(model_check_yld, ~enso))
+```
+
+### All yield data
+
+#### Graph over time
+
+```{r fig.height=4, fig.width=12}
+
+yld_gg = data_load2 |> 
+  ggplot(aes(as.factor(year),  yld, color = enso))+
+  geom_sina(color = "gray80")+
+  geom_boxplot(size =1, fill = NA, outlier.colour = NA)+
+  labs( y = "Yield (kg/ha)",
+        x = "Growing season",
+        color = "",
+        title = "Data from all plots")+
+  theme_half_open(font_size = 12)+
+  scale_color_colorblind()
+yld_gg
+
+```
+
+
+
+
+
+
+### Combo plot 
+
+```{r}
+sev_untreat_gg + enso_sev_gg+
+  yld_untreat_gg +enso_yld_gg+
+  plot_annotation(tag_levels = "A")+
+  plot_layout(ncol = 2,
+              widths = c(1,0.25),
+              guides = "collect")&
+  theme(axis.text = element_text(size =8))
+
+
+ggsave("figs/data_over_time.png", dpi = 600, height = 6, width = 9, bg = "white")
+ggsave("figs/data_over_time.pdf", dpi = 600, height = 6, width = 9, bg = "white")
+```
+
+
+
+# Modeling disease damage
+
+## Yield vs. Severity
+
+```{r}
+data_load2 |> 
+  ggplot(aes(sev, yld, color = enso))+
+  # geom_point(alpha = 0.1)+
+  geom_smooth(aes(group=study),
+              method = "lm", size =0.1,se = F, fullrange   =T)+
+  geom_smooth(aes(group = enso),  color = "red", se = F, method = "lm")+
+  scale_color_colorblind()+
+  theme_half_open()+
+  facet_rep_grid(~enso)+
+  ylim(0,7500)+
+  labs(x = "Severity (%)",
+       y = "Yield (kg/ha)",
+       color = "")+
+  theme(strip.background = element_blank())
+
+```
+
+
+
+
+## Meta-analysis
+
+###  Ordinary Regression 
+
+```{r}
+reg_dc = data_load2 |> 
+  group_by(study, year, region, enso) |> 
+  summarise(intercept = lm(yld~sev)$coefficients[1],
+            slope = lm(yld~sev)$coefficients[2],
+            r2 = summary(lm(yld~sev))$r.squared,
+            sigma = summary(lm(yld~sev))$sigma) %>%
+  mutate(Dc = (slope/intercept)*100) |> 
+  filter(Dc<0.5)
+reg_dc
+
+
+
+```
+
+
+#### Graph of the regression lines
+
+```{r}
+reg1_gg = reg_dc |> 
+  ggplot()+
+  geom_abline(aes(intercept = intercept, slope = slope, color= enso), alpha = 0.9)+
+  labs(x = "Severity (%)",
+       y = "Yield (kg/ha)")+
+  theme_half_open()+
+  xlim(0,100)+
+  ylim(0,7500)+
+  scale_color_colorblind()+
+  theme_half_open(font_size = 10)+
+  facet_rep_grid(~enso)+
+  labs(x = "SBR severity (%)",
+       y = "Soybean yield (kg/ha)",
+       color = "")+
+  theme(strip.background = element_blank(),
+        legend.position = "none")
+reg1_gg
+```
+
+
+
+
+#### Distribution of intercepts and slopes
+
+```{r}
+reg_dc |> 
+  pivot_longer(c(intercept, slope), names_to = "par",values_to = "par_value")
+```
+
+
+```{r}
+reg_dc |> 
+  pivot_longer(c(intercept, slope), names_to = "par",values_to = "par_value") |> 
+  group_by(par, enso) |> 
+  summarise(avg = round(mean(par_value),1),
+            std_dev = round(sd(par_value),1),
+            q_lw = round(quantile(par_value,c(0.025)),1),
+            q_up = round(quantile(par_value,c(0.975)),1),
+            q_up-q_lw)
+```
+
+
+
+
+```{r}
+parms_gg = reg_dc |> 
+  pivot_longer(c(intercept, slope), names_to = "par",values_to = "par_value") |>
+  mutate(par = ifelse(par=="intercept", "Intercept", "Slope")) |> 
+  ggplot(aes(y = enso, par_value,color = enso))+
+  ggdist::stat_dotsinterval(slab_shape = 19,point_interval = "mean_qi", .width = c(0.95), quantiles = 500, slab_color= "gray80") +
+  scale_color_colorblind()+
+  theme_half_open(font_size = 10)+
+  labs(x = "Parameter estimate",
+       y = "")+
+  facet_rep_grid(~par, scales = "free")+
+  theme(strip.background = element_blank(),
+        legend.position = "none")
+parms_gg
+```
+
+
+
+### Relative yield loss (%) relative to β~0~
+
+```{r}
+data2 = data_load2 |> 
+  full_join(reg_dc) |> 
+  mutate(l = 100*((intercept - yld)/intercept)) |> 
+  filter(!is.na(l))
+
+data2
+```
+
+
+```{r}
+data2 |> 
+  ggplot(aes(l))+
+  geom_histogram(color = "white", bins = 10)&
+  theme_half_open()
+
+```
+
+
+```{r}
+l_gg = data2 |> 
+  ggplot(aes(sev,l,color =enso))+
+  geom_point( shape =1, alpha = 0.3)+
+  # color = "gray80",
+  # geom_smooth(method ="lm", 
+  #             aes(color =enso),
+  #             color = "gray90",
+  #             formula = y~0+x)+
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray40")+
+  scale_color_colorblind()+
+  labs(x = "Severity (%)",
+       y = expression("Yield loss relative to "~β[0]))+
+  theme_half_open(font_size = 10)+
+  facet_rep_grid(~enso)+
+  labs(x = "SBR severity (%)",
+       # y = expression("Yield loss relative to "~β[0]~"(%)"),
+       y = expression("Relative yield loss (%)"),
+       color = "")+
+  theme(strip.background = element_blank(),
+        legend.position = "none")
+l_gg
+```
+
+
+#### Second Regression l ~ 0 + sev
+
+```{r}
+data3 = data2 |> 
+  group_by(study, year, enso, region) |> 
+  summarise(slope = lm(l~0+sev)$coefficients,
+            vi = as.numeric(vcov(lm(l~0+sev)))
+            ) |> 
+  full_join(enso_data_class)
+data3
+```
+
+
+```{r}
+reg2_gg =
+  data3 |> 
+  mutate(enso = factor(enso, levels = c("Neutral", "Warm", "Cold"))) |> 
+  ggplot()+
+  geom_abline(aes(intercept = 0, slope = slope, color= enso), alpha = 0.9)+
+  labs(x = "Severity (%)",
+       y = "Yield (kg/ha)")+
+  theme_half_open()+
+  xlim(0,100)+
+  ylim(0,100)+
+  scale_x_continuous(expand = c(0, 0),
+                     limits = c(0,100)) +
+  scale_y_continuous(expand = c(0, 0),
+                     limits = c(0,100))+
+  scale_color_colorblind()+
+  theme_half_open(font_size = 10)+
+  facet_rep_grid(~enso)+
+  labs(x = "SBR severity (%)",
+       y = expression("Relative yield loss (%)"),
+       color = "")+
+  theme(strip.background = element_blank(),
+        legend.position = "none")
+reg2_gg
+```
+
+
+```{r}
+data3 |> 
+  group_by(enso) |> 
+  summarise(mean(slope),
+            median(slope),
+            round(quantile(vi,0.95),2))
+```
+
+
+
+
+
+#### Damage vs. ENSO phases
+
+```{r}
+data3 |> 
+  ggplot(aes(slope))+
+  geom_histogram(color = "gray")+
+  facet_rep_wrap(~enso, ncol=1 )
+```
+
+
+
+```{r}
+library(scales)
+slopes_gg = data3 |> 
+  mutate(enso = factor(enso, levels = c("Neutral", "Warm", "Cold"))) |> 
+  arrange(slope) |> 
+  ggplot(aes(enso, slope ))+
+  geom_boxplot(fill = NA, color = "steelblue", size =1, outlier.colour = NA)+
+  geom_sina(aes(size = vi, color= vi), alpha = 0.5)+
+  scale_size_continuous(range = c(1, 7),
+                        #limits =  c(0.01,1),
+                        breaks = c(0.001, 0.01, 0.1, 1),
+                       label=scientific_format())+
+  scale_color_gradient(low = "black",
+                       high = "red",
+                       #limits = c(0.01, 1), 
+                        breaks = c(0.001, 0.01, 0.1, 1),
+                       label=scientific_format())+
+  guides(color= guide_legend(), 
+         size=guide_legend())+
+  theme_half_open(font_size = 10)+
+  labs(y = "Study-level damage coefficient (%/pp)",
+       x = "",
+       size = "Slope variance",
+       color  = "Slope variance" )+
+  theme(legend.position = "top")
+slopes_gg
+
+```
+
+
+
+### Combo plot
+
+
+```{r}
+layout <- "
+AAAACC
+BBBBCC
+"
+
+layout <- "
+AAAADD
+BBBBDD
+CCCCDD
+"
+layout <- "
+AAAABBB
+CCCCEEE
+DDDDEEE
+"
+
+layout <- "
+AAAABBB
+AAAABBB
+AAAABBB
+CCCCBBB
+CCCCEEE
+DDDDEEE
+DDDDEEE
+DDDDEEE
+"
+
+
+
+# (reg1_gg+parms_gg+l_gg+reg2_gg+slopes_gg)+
+((reg1_gg/l_gg/reg2_gg) | (parms_gg/slopes_gg))+
+  plot_annotation(tag_levels = 'A')&
+  theme(axis.title = element_text(size = 10)
+        # plot.tag = element_text(size = 8)
+        )
+
+ggsave("figs/regression_lines.png", dpi = 600, width = 10, height = 6, bg ="white")
+ggsave("figs/regression_lines.pdf", dpi = 600, width = 10, height = 6, bg ="white")
+```
+
+
+### Meta-analytical model
+
+```{r}
+data4 = data3 |> 
+  mutate(year = as.factor(year),
+         enso = factor(enso, levels = c("Neutral", "Cold", "Warm")))
+metamodel2 = rma.uni(yi = slope,
+                    vi = vi,
+                    mods = ~ enso, 
+                    random = list(~1|year/study),
+                    # struct = "HCS",
+                    method = "ML",
+                    data =data4)
+metamodel2
+
+```
+
+```{r}
+data4 = data3 |> mutate(year = as.factor(year))
+metamodel2 = rma.uni(yi = slope,
+                    vi = vi,
+                    mods = ~ 0+enso, 
+                    random = list(~1|year/study),
+                    # struct = "HCS",
+                    method = "ML",
+                    data =data4)
+metamodel2
+
+```
+
+
+
+#### Estimates for each moderator
+
+```{r}
+
+
+grid = qdrg(object = metamodel2,  data = data4, at = list(vi = 0, year.c = 0))
+# cld(emmeans(grid,specs = ~enso, by = "region"), Letters = letters)
+cld(emmeans(grid, specs = ~enso), Letters = letters)
+
+# grid@V
+```
+
+
+### Graphs
+
+#### Forest plot
+
+```{r}
+forest_gg = data3 |> 
+  mutate(study = as.character(study),
+         sd = sqrt(vi),
+         
+         cil = slope - 1.96*sd,
+         ciu = slope + 1.96*sd) |> 
+  full_join(as.data.frame(emmeans(grid,specs = ~enso))) |> 
+  mutate(enso = factor(enso, levels = c("Neutral",  "Warm","Cold"))) |> 
+  ggplot(aes(slope,reorder(study, slope),  color= enso))+
+  geom_point(size=0.3)+
+  geom_errorbar(aes(xmin=cil, xmax = ciu), width = 0,size=0.3, alpha =0.5)+
+  geom_vline(xintercept = 0, linetype = "dashed")+
+  geom_vline(aes(xintercept = emmean), color = "gray40", size = .5)+
+  scale_color_colorblind()+
+  facet_rep_wrap(~enso,  scales="free_y")+
+  labs(y = "",
+       x = "Damage coefficient (%/p.p.)",
+       color = "")+
+  guides(color = guide_legend(override.aes = list(size=2.5)))+
+  theme(axis.text.y = element_blank(),
+        axis.ticks.length.y = unit(0, "cm"),
+        strip.background = element_blank(),
+        legend.position = "bottom")
+forest_gg
+
+```
+
+
+#### Damage coefficient
+
+```{r}
+dc_data =  as.data.frame(emmeans(grid, specs = ~enso))
+dc_data
+```
+
+```{r}
+
+DC_gg = as.data.frame(emmeans(grid,specs = ~enso)) |> 
+    mutate(enso = factor(enso, levels = c("Neutral",  "Warm","Cold"))) |> 
+  ggplot(aes(reorder(enso,emmean), emmean, color = enso))+
+  geom_point(position = position_dodge(width = 0.2), size= 3)+
+  geom_errorbar(aes(ymin =lower.CL, ymax = upper.CL),
+                position = position_dodge(width = 0.2),
+                width = 0,
+                size = 0.7)+
+  labs(x = "",
+       y = "Damage coefficient (%/p.p.)",
+       color = "")+
+  scale_y_continuous(breaks = seq(0.1,0.8, by = 0.1), limits =c(0.35,0.81))+
+  scale_color_colorblind()+
+  theme(legend.position = "none")
+  
+ 
+DC_gg
+```
+
+
+#### Yield loss
+
+```{r}
+
+damage_coef_df =as.data.frame(emmeans(grid,specs = ~enso)) |> 
+    mutate(enso = factor(enso, levels = c("Neutral",  "Warm","Cold"))) |> 
+  mutate(`100` = 100-100*emmean,
+         `0` = 100,
+         `50` = 100-50*emmean,
+         `50_upper` = 100-50*lower.CL,
+         `50_lower` = 100-50*upper.CL) |>
+  mutate(yield_50 = 100-50*emmean) 
+
+damage_coef_df_for_plot = damage_coef_df|>
+  pivot_longer(7:8,
+               names_to = "sev", 
+               values_to = "yloss") %>%
+  mutate(sev = as.numeric(sev)) %>%
+  mutate(cil = 100-sev*lower.CL,
+         ciu = 100-sev*upper.CL) |> 
+  mutate(yl = -(yloss-100)) 
+  
+rel_gg = damage_coef_df_for_plot |> 
+  ggplot()+
+  geom_ribbon(aes(x= sev,ymin = cil, ymax = ciu,  fill = enso ),alpha = 0.5, color = NA)+
+  geom_line(aes(sev, yloss, color = enso),size = 1)+
+  geom_vline(xintercept =50, linetype = "dashed", color = "gray40", size = 0.2)+
+  geom_hline(aes(yintercept = yield_50, color = enso), linetype = "dashed", size = 0.2)+
+  geom_point(aes(x = 50, y = yield_50, fill =enso ), size = 2, shape = 21, color = "white")+
+  geom_label_repel(data = damage_coef_df,
+                   aes(x =50, y = yield_50, fill =enso, label = paste0("Yield = ", round(yield_50,1),"%")),
+                   label.size = 0.1, 
+                   size = 2, 
+                   color = "white",
+                   seed = 123,
+                   show.legend = F)+
+  guides(text = F)+
+  scale_linetype_manual(values = 2)+
+  scale_color_colorblind()+
+  scale_fill_colorblind()+
+  scale_x_continuous(limits = c(0,100))+
+  scale_y_continuous(limits = c(0,100), breaks = c(seq(0,100,by = 20)),
+                     )+
+  theme(strip.background = element_blank(),
+        legend.position = "top")+
+  coord_equal()+
+  labs(x = "SBR Severity (%)",
+       y = "Soybean yield (%)",
+       color = "",
+       fill = "")
+rel_gg
+
+```
+
+
+
+#### Combo plot
+
+```{r}
+ (DC_gg+rel_gg)+
+  plot_annotation(tag_levels = "A")
+  # 
+  # plot_layout(guides = "collect") &
+  # theme(axis.title = element_text(size = 5),
+  #       legend.position = "bottom")
+  
+  
+ggsave("figs/z.png", dpi = 900, width =6, height = 3.5, bg ="white")
+ggsave("figs/z.pdf", dpi = 900, width =6, height = 3.5, bg ="white")
+```
+
+
+
+
+# Yield protection
+
+> Vector for attainable yield (`ymax`), control efficacy (`lambda`), severity in untreated field (`sn`), and damage coefficient (`a`).
+
+```{r}
+length_grid = 500
+ymax = seq(1500, 4000,length.out = length_grid) # attainable yield
+lambda = c(30, 50, 70) # control efficacy
+sn = seq(0, 100,length.out = length_grid) # seveiry on untreated
+a = dc_data$emmean # damage coeficients
+```
+
+> Calculating yield protection (`yld_protection`) for the grid of vectors 
+
+
+```{r}
+yprotection_df = expand.grid(ymax = ymax,lambda = lambda, sn = sn, a = a) |> 
+  mutate(yld_protection = ((a*ymax)/100) *(sn-(sn*(1-lambda/100)))) |> 
+  mutate(lambda = paste0(lambda,"% of Control")) |> 
+  full_join(dc_data |> rename(a = emmean))
+```
+
+
+## Response surfaces
+
+### Absolute yield protection
+
+```{r}
+yprotection_df |> 
+  ggplot(aes(sn, ymax, fill = yld_protection))+ 
+  geom_raster()+
+  scale_fill_viridis_b(option = "A", 
+                       guide = guide_colorbar(barwidth = 15, barheight = 0.3),
+                       breaks = seq(0, 3000, by =250)
+                       )+
+  facet_grid(lambda~enso)+
+  scale_y_continuous(breaks = seq(min(ymax), max(ymax), length.out = 5))+
+  theme_minimal_grid(font_size = 10)+
+  labs(y = "Attainable yield (kg/ha)",
+       x = "Severity untreated (%)",
+       fill ="Yield protection (kg/ha)" )+
+  theme(panel.grid = element_blank(),
+        axis.text = element_text(size = 5),
+        legend.position = "bottom")
+
+
+ggsave("figs/surface_yield_protection.png", dpi = 600,height =5, width = 5, bg = "white" )
+
+```
+
+
+### Yield protection difference from Neutral ENSO
+
+
+
+```{r}
+yprotection_df_diff = yprotection_df |> 
+  group_by(enso) |> 
+  mutate(id = 1:length(enso)) |> 
+  ungroup() |> 
+  pivot_wider(id_cols = c(id,lambda, sn,ymax),
+              values_from = yld_protection,
+              names_from = enso) |> 
+  mutate(Cold = Cold - Neutral,
+         Warm = Warm -Neutral) |> 
+  dplyr::select(-Neutral) |> 
+  pivot_longer(5:6,
+               values_to = "diff",
+               names_to = "enso")
+max(yprotection_df_diff$diff)
+
+```
+
+
+```{r}
+yprotection_df_diff |> 
+  ggplot(aes(sn, ymax, fill = diff))+ 
+  geom_raster()+
+  scale_fill_steps2(midpoint = 0,
+                    low = "#742881ff",#"#",
+                    mid = "#f9f9f9ff",
+                    high = "#1b7939ff",#"#27456e",
+                    guide = guide_colorbar(barwidth = 10, barheight = 0.3),
+                    limits = c(min(yprotection_df_diff$diff),max(yprotection_df_diff$diff)),
+                    breaks = seq(-200, 350, by =50))+
+  scale_y_continuous(breaks = seq(min(ymax), max(ymax), length.out = 5))+
+  scale_x_continuous(breaks = seq(min(sn)*100, max(sn)*100, length.out = 5 ))+
+  facet_grid(lambda~enso)+
+  theme_minimal_grid(font_size = 10)+
+  labs(y = "Attainable yield (kg/ha)",
+       x = "Severity untreated (%)",
+       fill ="Difference in yield protection\nfrom neutral ENSO phase (kg/ha)" )+
+  theme(panel.grid = element_blank(),
+        legend.position = "bottom",
+        axis.text = element_text(size =8),
+        legend.text = element_text(size =6),
+        legend.title = element_text(size =6))
+
+ggsave("figs/surface_yield_protection_difference.png", dpi = 600, height =5, width = 4, bg = "white" )
+ggsave("figs/surface_yield_protection_difference.pdf", dpi = 600, height =5, width = 4, bg = "white" )
+```
+
+```{r}
+expand.grid(a = seq(0.1, 1, length.out = 20),
+            sev = seq(0,100,by =5 ),
+            lambda = c(50, 70),
+            ymax = ymax[250])|> 
+  mutate(yld_protection = (a*ymax*(sev - sev*((1-lambda/100))))/100) |> 
+  ggplot(aes(sev, yld_protection, group = a, color = a))+
+  geom_line(size = 1)+
+  scale_color_viridis_c()+
+  facet_rep_wrap(~lambda)
+  
+
+```
+
+
+
+# Session Info
+
+```{r}
+sessionInfo()
+```
+

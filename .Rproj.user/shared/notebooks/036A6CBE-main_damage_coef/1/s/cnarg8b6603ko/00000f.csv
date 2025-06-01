@@ -1,0 +1,11 @@
+"0","pairs(emmeans(model_check, ~enso))"
+"2","G3;Cannot use mode = ""kenward-roger"" because *pbkrtest* package is not installed
+g"
+"1"," contrast       estimate    SE   df t.ratio p.value
+ Neutral - Warm   -0.203 0.254 11.9  -0.797  0.7119
+ Neutral - Cold   -0.474 0.284 16.5  -1.669  0.2462
+ Warm - Cold      -0.272 0.315 14.7  -0.863  0.6711
+
+Degrees-of-freedom method: satterthwaite 
+P value adjustment: tukey method for comparing a family of 3 estimates 
+"
