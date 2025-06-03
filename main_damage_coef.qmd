@@ -25,7 +25,7 @@ format:
 This project uses `renv` to manage package dependencies and ensure reproducible computational environments. Follow the steps below to set up and execute the code.
 
 ## Prerequisites
-1) R (≥ 4.0.0) 
+1) R (≥ 4.4.1) 
 Ensure you have a compatible version of R installed. You can download R from CRAN.
 
 2) Git (optional but recommended)
@@ -133,7 +133,9 @@ theme_set(theme_half_open(font_size = 10))
 ## Soybean Rust data
 
 ```{r}
-data_load = read.csv("data/raw-data-2005-2020.csv")
+data_load = read.csv("data/raw-data-2005-2020.csv") |> 
+  mutate(sev = as.numeric(sev),
+         yld = as.numeric(yld))
 ```
 
 ## ENSO data
@@ -144,11 +146,11 @@ enso_data = read.csv("data/enso.csv")
 Classifying the years based on Oceanic Niño Index (ONI) on the October, November, and December (OND) trimester. Seasons with ONI higher then 75 percentiles were classified as warm, year with ONI lower then its 25 percentiles were classified as Cold, and the years with ONI within the 25 and 75 percentiles were classified as neutral.
 
 ```{r}
-enso_data_class = enso_data %>%
+enso_data_class = enso_data |> 
   mutate(year = as.character(Year+1)) |> 
   dplyr::select(-Year) |> 
   mutate(selected_trimester = OND) |> 
-  dplyr::select(selected_trimester, year) %>%
+  dplyr::select(selected_trimester, year) |> 
   filter(!is.na(selected_trimester),
          year != 2021) |> 
   mutate(quantile_0.75 = quantile(selected_trimester, 0.75),
@@ -200,7 +202,8 @@ enso_data_class |>
 
 
 ```{r}
-data_load2 = data_load %>%
+data_load2 = data_load |> 
+  mutate(sev = as.numeric(sev)) |> 
   full_join(enso_data_class) |> 
   mutate(enso = factor(enso, levels = c("Neutral", "Warm", "Cold"))) |> 
   filter(!is.na(sev),
@@ -506,7 +509,7 @@ yld_gg
 ```{r}
 sev_untreat_gg + enso_sev_gg+
   yld_untreat_gg +enso_yld_gg+
-  plot_annotation(tag_levels = "A")+
+  plot_annotation(tag_levels = "a")+
   plot_layout(ncol = 2,
               widths = c(1,0.25),
               guides = "collect")&
@@ -616,7 +619,7 @@ parms_gg = reg_dc |>
   pivot_longer(c(intercept, slope), names_to = "par",values_to = "par_value") |>
   mutate(par = ifelse(par=="intercept", "Intercept", "Slope")) |> 
   ggplot(aes(y = enso, par_value,color = enso))+
-  ggdist::stat_dotsinterval(slab_shape = 19,point_interval = "mean_qi", .width = c(0.95), quantiles = 500, slab_color= "gray80") +
+  ggdist::stat_dotsinterval(slab_shape = 19,point_interval = "mean_qi", .width = c(0.95), quantiles = 500, slab_color= "gray60") +
   scale_color_colorblind()+
   theme_half_open(font_size = 10)+
   labs(x = "Parameter estimate",
@@ -981,7 +984,7 @@ rel_gg
 
 ```{r}
  (DC_gg+rel_gg)+
-  plot_annotation(tag_levels = "A")
+  plot_annotation(tag_levels = "a")
   # 
   # plot_layout(guides = "collect") &
   # theme(axis.title = element_text(size = 5),

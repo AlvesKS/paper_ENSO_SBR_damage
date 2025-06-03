@@ -1,1 +1,0 @@
-"0","model_check_yld = lmer(yld ~ enso + (1|year/study), data = only_check_df, REML = F)"

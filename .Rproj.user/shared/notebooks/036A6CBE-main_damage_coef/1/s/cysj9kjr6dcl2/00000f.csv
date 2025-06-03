@@ -4,7 +4,3 @@
 "0","                         sev == 0 ~ 0.1,"
 "0","                         sev>0 & sev<100 ~ sev), "
 "0","           logit_sev =  DescTools::Logit(sev/100))"
-"2","G3;Registered S3 method overwritten by 'data.table':
-  method           from
-  print.data.table     
-g"

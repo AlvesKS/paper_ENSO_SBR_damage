@@ -1,7 +1,7 @@
 "0","cld(emmeans(model_check_yld, ~enso))"
-"1"," enso    emmean  SE   df lower.CL upper.CL .group
- Warm      1929 192"
-"1"," 18.9     1527     2331  1    
+"1"," enso   "
+"1"," emmean  SE   df lower.CL upper.CL .group
+ Warm      1929 192 18.9     1527     2331  1    
  Neutral   2148 138 19.8     1860     2437  1    
  Cold      2330 203 22.0     1908     2752  1    
 

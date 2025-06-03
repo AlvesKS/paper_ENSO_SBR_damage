@@ -1,6 +1,6 @@
 "0","sev_untreat_gg + enso_sev_gg+"
 "0","  yld_untreat_gg +enso_yld_gg+"
-"0","  plot_annotation(tag_levels = ""A"")+"
+"0","  plot_annotation(tag_levels = ""a"")+"
 "0","  plot_layout(ncol = 2,"
 "0","              widths = c(1,0.25),"
 "0","              guides = ""collect"")&"

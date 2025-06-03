@@ -1,7 +1,0 @@
-"0"," data_load2 |> "
-"0","  filter(active_ingred == ""CHECK"") |> "
-"0","  group_by(year) |> "
-"0","  summarise(avg_sev = mean(sev),"
-"0","            max_sev = max(sev),"
-"0","            min_sev = min(sev)) |> "
-"0","  arrange(max_sev)"

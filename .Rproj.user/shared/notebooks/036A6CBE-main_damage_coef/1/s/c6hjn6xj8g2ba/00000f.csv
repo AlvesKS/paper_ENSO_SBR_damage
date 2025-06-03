@@ -1,6 +1,0 @@
-"0"," data_load2 |> "
-"0","  filter(active_ingred == ""CHECK"") |> "
-"0","  ungroup() |> "
-"0","  summarise(avg_yld = mean(yld),"
-"0","            max_yld = max(yld),"
-"0","            min_yld = min(yld))"
