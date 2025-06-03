@@ -1,5 +1,0 @@
-"0","data2 |> "
-"0","  ggplot(aes(l))+"
-"0","  geom_histogram(color = ""white"", bins = 10)&"
-"0","  theme_half_open()"
-"0",""

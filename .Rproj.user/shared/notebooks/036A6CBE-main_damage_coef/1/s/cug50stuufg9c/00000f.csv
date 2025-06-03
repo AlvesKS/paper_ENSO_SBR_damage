@@ -1,5 +1,0 @@
-"0","length_grid = 500"
-"0","ymax = seq(1500, 4000,length.out = length_grid) # attainable yield"
-"0","lambda = c(30, 50, 70) # control efficacy"
-"0","sn = seq(0, 100,length.out = length_grid) # seveiry on untreated"
-"0","a = dc_data$emmean # damage coeficients"

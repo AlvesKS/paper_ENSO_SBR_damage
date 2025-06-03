@@ -1,9 +1,0 @@
-"0","dc_data =  as.data.frame(emmeans(grid, specs = ~enso))"
-"0","dc_data"
-"1"," enso       emmean         SE  df  lower.CL  upper.CL
- Cold    0.5011073 0.03821859 414 0.4259807 0.5762340
- Neutral 0.5650787 0.02362955 414 0.5186298 0.6115275
- Warm    0.6909191 0.03045097 414 0.6310613 0.7507769
-
-Confidence level used: 0.95 
-"

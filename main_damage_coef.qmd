@@ -1,9 +1,11 @@
 ---
 title: "Data analysis"
 subtitle: "Quantifying ENSO-mediated Shifts in Soybean Rust Impact: Yield Loss Dynamics and Management Implications in Brazil"
-author: 
- - name: Kaique S. Alves
-   affiliation: "Universidade Federal de Viçosa, Viçosa MG, Brazil"
+author:  
+  - name: Kaique S. Alves
+    affiliation: "Departamento de Fitopatologia, Universidade Federal de Viçosa, Viçosa, MG, Brazil"
+  - name: Jhonatan P. Barro
+  - name: Emerson M. Del Ponte
 date: last-modified
 title-block-banner: true
 format:
@@ -11,7 +13,7 @@ format:
     code-fold: false
     theme: cosmo
     toc: true
-    toc-location: left
+    toc-location: right
     toc-depth: 5
     df-print: paged
     self-contained: false
@@ -19,6 +21,27 @@ format:
     smooth-scroll: true
     code-copy: true
 ---
+
+# Introduction
+
+This repository contains the code and data processing workflow supporting the analyses presented in the study:  
+**"Quantifying ENSO-mediated shifts in soybean rust impact: Yield loss dynamics and management implications in Brazil."**
+
+Soybean rust (SBR), caused by *Phakopsora pachyrhizi*, is a major threat to soybean production in Brazil. The study investigates how climate variability, specifically the El Niño Southern Oscillation (ENSO), influences SBR-related yield losses and the performance of disease management strategies. To this end, we analyzed a comprehensive dataset of 417 field trials conducted across 73 locations in Brazil from 2005 to 2020.
+
+The primary goals of the analysis were to:
+
+- Estimate **disease damage coefficients** (i.e., the relationship between disease severity and yield loss) under different ENSO phases (warm, Neutral, cold).
+- Assess the **effectiveness of control measures** across these climatic contexts.
+- Quantify how ENSO conditions modulate both disease impact and management outcomes.
+
+This codebase includes all steps for:
+
+- Cleaning and structuring raw trial data  
+- Classifying ENSO phases  
+- Fitting statistical models to estimate damage coefficients  
+- Performing meta-analyses and producing summary figures and tables
+
 
 # Getting started
 
@@ -99,9 +122,6 @@ From now on, you can run the analysis by executing the code chunks in the R quar
 3)  Inspect and Export Outputs
 
 Output figures (PNG/PDF) are saved in the `figs/` folder.
-
-
-
 
 
 # Packages
@@ -807,7 +827,7 @@ DDDDEEE
 
 # (reg1_gg+parms_gg+l_gg+reg2_gg+slopes_gg)+
 ((reg1_gg/l_gg/reg2_gg) | (parms_gg/slopes_gg))+
-  plot_annotation(tag_levels = 'A')&
+  plot_annotation(tag_levels = 'a')&
   theme(axis.title = element_text(size = 10)
         # plot.tag = element_text(size = 8)
         )

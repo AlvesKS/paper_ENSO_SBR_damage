@@ -1,7 +1,0 @@
-"0","data2 = data_load2 |> "
-"0","  full_join(reg_dc) |> "
-"0","  mutate(l = 100*((intercept - yld)/intercept)) |> "
-"0","  filter(!is.na(l))"
-"2","[38;5;231mJoining with `by = join_by(study, year, enso, region)`[39m
-"
-"0","data2"
